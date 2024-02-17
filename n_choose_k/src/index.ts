@@ -21,5 +21,26 @@ const nChooseK = <T>(elements: T[], k: number): T[][] => {
     return choices;
 };
 
+const nChooseKFunctional = <T>(elements: T[], k: number): T[][] => {
+    const n: number = elements.length;
+    const combinations: number[] = [];
+    for (let i = 0; i < Math.pow(2, n); i++) {
+        combinations.push(i);
+    }
+    const oneBitPositions = (x: number): number[] => {
+        const oneBitsAt: number[] = [];
+        for (let i = 0; x > 0; i++, x >>= 1) {
+            if ((x & 1) == 1) {
+                oneBitsAt.push(i);
+            }
+        }
+        return oneBitsAt;
+    };
+    return combinations
+        .map(oneBitPositions)
+        .filter(xs => xs.length == k)
+        .map(xs => xs.reduce((acc: T[], x: number) => acc.concat([elements[x]]), []));
+};
 
 console.log(nChooseK(["a", "b", "c", "d", "e", "f", "g"], 3));
+console.log(nChooseKFunctional(["a", "b", "c", "d", "e", "f", "g"], 3));
