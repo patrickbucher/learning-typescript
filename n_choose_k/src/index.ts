@@ -22,22 +22,18 @@ const nChooseK = <T>(elements: T[], k: number): T[][] => {
 };
 
 const nChooseKFunctional = <T>(elements: T[], k: number): T[][] => {
-    const n: number = elements.length;
-    const combinations: number[] = [];
-    for (let i = 0; i < Math.pow(2, n); i++) {
-        combinations.push(i);
-    }
-    const oneBitPositions = (x: number): number[] => {
+    const oneBitsAtIndices = (x: number): number[] => {
         const oneBitsAt: number[] = [];
-        for (let i = 0; x > 0; i++, x >>= 1) {
+        for (let i = 0; x > 0; i++) {
             if ((x & 1) == 1) {
                 oneBitsAt.push(i);
             }
+            x >>= 1;
         }
         return oneBitsAt;
-    };
-    return combinations
-        .map(oneBitPositions)
+    }
+    return [...Array(Math.pow(2, elements.length)).keys()]
+        .map(oneBitsAtIndices)
         .filter(xs => xs.length == k)
         .map(xs => xs.reduce((acc: T[], x: number) => acc.concat([elements[x]]), []));
 };
