@@ -1,5 +1,5 @@
-const nChooseK = <T>(elements: T[], k: number): T[][] => {
-    const choices: T[][] = [];
+const nChooseK = <T>(elements: T[], k: number): Set<Set<T>> => {
+    const choices: Set<Set<T>> = new Set<Set<T>>();
     const limit: number = Math.pow(2, elements.length);
     for (let i = 0; i < limit; i++) {
         let mask: number = i;
@@ -11,17 +11,17 @@ const nChooseK = <T>(elements: T[], k: number): T[][] => {
             mask >>= 1;
         }
         if (positions.length == k) {
-            const names: T[] = [];
+            const names: Set<T> = new Set<T>();
             for (const position of positions) {
-                names.push(elements[position]);
+                names.add(elements[position]);
             }
-            choices.push(names);
+            choices.add(names);
         }
     }
     return choices;
 };
 
-const nChooseKFunctional = <T>(elements: T[], k: number): T[][] => {
+const nChooseKFunctional = <T>(elements: T[], k: number): Set<Set<T>> => {
     const oneBitsAtIndices = (x: number): number[] => {
         const oneBitsAt: number[] = [];
         for (let i = 0; x > 0; i++) {
@@ -32,10 +32,11 @@ const nChooseKFunctional = <T>(elements: T[], k: number): T[][] => {
         }
         return oneBitsAt;
     }
-    return [...Array(Math.pow(2, elements.length)).keys()]
+    const result = [...Array(Math.pow(2, elements.length)).keys()]
         .map(oneBitsAtIndices)
         .filter(xs => xs.length == k)
         .map(xs => xs.reduce((acc: T[], x: number) => acc.concat([elements[x]]), []));
+    return new Set<Set<T>>(result.map((rs: T[]) => new Set<T>(rs)));
 };
 
 console.log(nChooseK(["a", "b", "c", "d", "e", "f", "g"], 3));
